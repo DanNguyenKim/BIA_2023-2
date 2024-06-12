@@ -1,0 +1,16 @@
+CREATE OR REPLACE VIEW SALES.PUBLIC.TOP_5_PRODUCTS_VIEW AS
+SELECT
+    PRODUCT,
+    QUANTITY
+FROM (
+    SELECT
+        PRODUCT,
+        SUM(QuantityOrdered) AS Quantity,
+        ROW_NUMBER() OVER (ORDER BY SUM(QuantityOrdered) DESC) AS RowNum
+    FROM SALES.PUBLIC.order_raw
+    GROUP BY
+        PRODUCT
+) subquery
+WHERE RowNum <= 5;
+
+SELECT * FROM SALES.PUBLIC.TOP_5_PRODUCTS_VIEW;
